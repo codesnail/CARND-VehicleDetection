@@ -41,18 +41,17 @@ This step is contained in VehicleDetection.VehicleClassifier, in the method trai
 
 ![alt text][image1]
 
-I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  I grabbed random images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like. Here is an example using the `YCrCb` color space and HOG parameters of `orientations=8`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
-
+I explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).   Here is an example using the `YCrCb` color space and HOG parameters of `orientations=8`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
 
 ![alt text][image2]
 
 #### 2. Explain how you settled on your final choice of HOG parameters.
 
-I tried various combinations of parameters and...
+I tried various combinations of HOG parameters to train my classifier, and settled on the one that gave better score on the test set. Besides the test set from train_test_split, I also tested the classifier on single frames extracted from the test video.
 
 #### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
-I trained a linear SVM using...
+The step to train a classifier is contained in package VehicleDetection, class VehicleClassifier, method train(). I first used a plain Linear SVM, but it was producing a lot of false positives. I then did some negative sample mining to extract false positives from a few frames of the test video and fed them as non-car training examples. I had to repeat this train/test cycle a number of times and feed false positives from one cycle to the next. This led me to consider AdaBoost. It is kind of an ensemble technique that assigns higher weight to misclassified samples to train the subsequent classifier. I Linear SVM as the base classifier for AdaBoost, and with good results on the test video, I settled on this choice. As for the features, I used HOG, color histogram and spatial features. The code for these was taken from the Udacity quiz file lesson_functions.py (also contained in package VehicleDetection).
 
 ### Sliding Window Search
 

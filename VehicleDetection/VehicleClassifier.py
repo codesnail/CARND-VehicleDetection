@@ -217,15 +217,15 @@ class VehicleClassifier:
     
     # Define a single function that can extract features using hog sub-sampling and make predictions
     def find_cars(self, args): #img, scale, y_range=[350,680], sframe_id=""):
-        img, scale, y_range, x_range = args
+        img, scale, y_range = args
         #draw_img = np.copy(img)
         #img = img.astype(np.float32)/255
         ystart = y_range[0] #self.y_start_stop[0] # 
         ystop = y_range[1] #self.y_start_stop[1] # 
-        xstart = x_range[0]
-        xstop = x_range[1]
-        #feature_image = img[ystart:ystop,:,:]
-        feature_image = img[ystart:ystop, xstart:xstop, :]
+        #xstart = x_range[0]
+        #xstop = x_range[1]
+        feature_image = img[ystart:ystop,:,:]
+        #feature_image = img[ystart:ystop, xstart:xstop, :]
         #copy_img = img[ystart:ystop,:,:]
         if self.color_space != 'RGB':
             if self.color_space == 'HSV':
@@ -503,19 +503,19 @@ class VehicleClassifier:
                     [400,680], # for scale = 2.5
                     #[400,680] # for scale = 3.0
                    ]
-        
+        '''
         x_range = [
                     [400,1200], # for scale = 1
                     [400,1200], # for scale = 2
                     [0, frame.shape[1]], # for scale = 2.5
                     #[0, frame.shape[1]] # for scale = 3.0
                     ]
-        
+        '''
         i=0
         
         for scale in search_scales:
             #on_windows_img, windows = self.find_cars(frame, scale, y_range[i], sframe_id=sframe_id)
-            windows = self.find_cars((frame, scale, y_range[i], x_range[i])) #, sframe_id=sframe_id)
+            windows = self.find_cars((frame, scale, y_range[i])) #, sframe_id=sframe_id)
             #on_windows_img, windows = find_cars_nb(frame, scale)
             #on_windows_img.append(img)
             on_windows.append(windows)

@@ -51,7 +51,7 @@ I tried various combinations of HOG parameters to train my classifier, and settl
 
 #### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
-The step to train a classifier is contained in package VehicleDetection, class VehicleClassifier, method train(). I first used a plain Linear SVM, but it was producing a lot of false positives. I then did some negative sample mining to extract false positives from a few frames of the test video and fed them as non-car training examples. I had to repeat this train/test cycle a number of times and feed false positives from one cycle to the next. This led me to consider AdaBoost. It is kind of an ensemble technique that assigns higher weight to misclassified samples to train the subsequent classifier. I Linear SVM as the base classifier for AdaBoost, and with good results on the test video, I settled on this choice. As for the features, I used HOG, color histogram and spatial features. The code for these was taken from the Udacity quiz file lesson_functions.py (also contained in package VehicleDetection).
+The step to train a classifier is contained in package VehicleDetection, class VehicleClassifier, method train(). For the features, I used HOG, color histogram and spatial features. The code for these was taken from the Udacity quiz file lesson_functions.py (also contained in package VehicleDetection). In the train() method, after loading the car and non-car images, I split the data into train/test sets using train_test_split() method of sklearn.model_selection. I then fitted a Standard_Scaler on the training data and kept it around for testing and future processing. The scaled training data was then fed to AdaBoost with Linear SVM as the base classifiers.
 
 ### Sliding Window Search
 
@@ -63,9 +63,11 @@ I decided to search random window positions at random scales all over the image 
 
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
-Ultimately I searched on two scales using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
+Here are some example images:
 
 ![alt text][image4]
+
+I first used a plain Linear SVM classifier, but it was producing a lot of false positives. I then did negative sample mining to extract false positives from a few frames of the test video and fed them as non-car training examples. I had to repeat this train/test cycle a number of times and feed false positives from one cycle to the next. This led me to consider AdaBoost. It uses an ensemble of weak classifiers, where the misclassified samples from one classifier are assigned a higher weight to train the next classifier. I used Linear SVM as the base classifier for AdaBoost, and with good results on the test video, I settled on this choice. 
 ---
 
 ### Video Implementation

@@ -61,12 +61,7 @@ The step to train a classifier is contained in package VehicleDetection, class V
 
 #### 1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
-The sliding window search is implemented in package `VehicleDetection`, class `VehicleClassifier`, method `find_cars()`. This method is borrowed from the Udacity quiz, however there are some changes to it. The method takes in the window scale to search (the base window is 64x64 pixels), and also a range of y-axis to search between, and it returns a list of window coordinates that are predicted to be cars. This method first extracts the HOG features from the entire frame, then selects a window based on scale and other parameters. The method is called from `VehicleClassifier.identifyVehicles`, which passes various search scales to it. The search scales were selected based on performance on snapshots taken from the test video, as well as clips taken from the project video. Initially I used 2 scales of 1.5 and 2.0. This was doing well for the cars that are near-by, but I wanted to cover a little more distance. So I ended up using 3 scales, `[1.0, 1.5, 2.5]`, with the following ranges of y-axis: 
-
-`[[350,500], # for scale = 1
-  [350,512], # for scale = 1.5
-  [400,680]  # for scale = 2.5
-  ]`
+The sliding window search is implemented in package `VehicleDetection`, class `VehicleClassifier`, method `find_cars()`. This method is borrowed from the Udacity quiz, however there are some changes to it. The method takes in the window scale to search (the base window is 64x64 pixels), and also a range of y-axis to search between, and it returns a list of window coordinates that are predicted to be cars. This method first extracts the HOG features from the entire frame, then selects a window based on scale and other parameters. The method is called from `VehicleClassifier.identifyVehicles`, which passes various search scales to it. The search scales were selected based on performance on snapshots taken from the test video, as well as clips taken from the project video. Initially I used 2 scales of 1.5 and 2.0. This was doing well for the cars that are near-by, but I wanted to cover a little more distance. So I ended up using 3 scales, `[1.0, 1.5, 2.5]`, with the following ranges of y-axis respectively: `[350,500], [350,512], [400,680]`
 
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 

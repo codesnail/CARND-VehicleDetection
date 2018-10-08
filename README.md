@@ -45,7 +45,7 @@ This step is contained in VehicleDetection.VehicleClassifier, in the method trai
 
 ![alt text][image1]
 
-I explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).   Here is an example using the `YCrCb` color space and HOG parameters of `orientations=8`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
+I explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).   Here is an example using the `YCrCb` color space and HOG parameters of `orientations=9`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
 
 ![alt text][image2]
 
@@ -81,12 +81,12 @@ I first used a plain Linear SVM classifier, but it was producing a lot of false 
 ### Video Implementation
 
 #### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
-Here's a [link to my video result](./project_video.mp4)
+Here's a [link to my video result](./project_video_out.mp4)
 
 
 #### 2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
-I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
+The filteration code is implemented in the main program that runs the pipeline: `run_vehicle_detection2.py`. This program loops through the video frames and calls `VehicleClassifier.identifyVehicles()` on each frame. It returns a heatpmap of detected pixels for each frame. These heatmaps are stored in a list for 5 subsequent frames. I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the aggregated heatmaps. For aggregation, I first tried taking the mean of the heat maps and thresholding at 3 detections per frame. This worked pretty well to filter out the false positives, but it doesn't create very good bounding boxes and is late in identifying vehicles that are just appearing in the frame. So I used the sum of 5 subsequent heatmaps and thresholding them at 12 total detections (considering I'm searching on 3 scales). I then assumed each blob corresponded to a vehicle. I constructed bounding boxes to cover the area of each blob detected.
 
 Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
 

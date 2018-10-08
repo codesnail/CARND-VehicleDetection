@@ -68,6 +68,7 @@ Here are some example images:
 ![alt text][image4]
 
 I first used a plain Linear SVM classifier, but it was producing a lot of false positives. I then did negative sample mining to extract false positives from a few frames of the test video and fed them as non-car training examples. I had to repeat this train/test cycle a number of times and feed false positives from one cycle to the next. This led me to consider AdaBoost. It uses an ensemble of weak classifiers, where the misclassified samples from one classifier are assigned a higher weight to train the next classifier. I used Linear SVM as the base classifier for AdaBoost, and with good results on the test video, I settled on this choice. 
+
 ---
 
 ### Video Implementation

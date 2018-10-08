@@ -481,7 +481,7 @@ class VehicleClassifier:
         return on_windows
 
 
-    def identifyVehicles(self, frame, search_scales=[1.1, 2.0], heatmap=None, heat_threshold=2, sframe_id="", visualize=0):
+    def identifyVehicles(self, frame, search_scales=[1.0, 1.5, 2.5, 3.0], heatmap=None, heat_threshold=2, sframe_id="", visualize=0):
         #draw_image = np.copy(image)
         
         # Uncomment the following line if you extracted training
@@ -498,10 +498,10 @@ class VehicleClassifier:
         on_windows = []
         #find_cars_nb = numba.jit(self.find_cars)
         y_range = [
-                    #[350,500], # for scale = 1
+                    [350,500], # for scale = 1
                     [350,512], # for scale = 1.5
                     [400,680], # for scale = 2.5
-                    #[400,680] # for scale = 3.0
+                    [400,680] # for scale = 3.0
                    ]
         '''
         x_range = [

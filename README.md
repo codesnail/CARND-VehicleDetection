@@ -131,4 +131,10 @@ Here, we can see the false positive prediction is removed in the integrated heat
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+The first problem I faced was the detection of lots of false positives. I already discussed the approach I took above where I discussed how I optimized the classifier and used AdaBoost. To me the major challenge of this approach is to identify non-cars. My pipeline incorrectly classifies some sign-boards and probably will fail on other objects not explicitly trained on that look similar to a car. I could remove these by identifying those objects and training more on them. But for me this is the major pitfall of this approach, i.e., it relies on negative mining, and makes it look a bit unreliable. Ideally I would like to explore more features to identify the positive examples more correctly. I could use template matching, but the template has to be generic enough or I will have to use multiple templates. 
+
+Another approach would be to implement a bayesian predict/sense cycle, with a Kalman or particle filter, so that once a vehicle is detected, we can follow it more accurately by updating its sensed position with a motion prediction model.
+
+I would like to try deep learning to see if that works better, however to me it's lack of an explanable model would be a key concern from safety perspective (but similar concern is present in the current approach).
+
+Another thing I want to try is combining edge detection in the pipeline. Perhaps identifying object boundaries and then feeding the objects into the classifier rather than a blindly sweeping search window.

@@ -13,6 +13,15 @@ The goals / steps of this project are the following:
 * Run your pipeline on a video stream (start with the test_video.mp4 and later implement on full project_video.mp4) and create a heat map of recurring detections frame by frame to reject outliers and follow detected vehicles.
 * Estimate a bounding box for vehicles detected.
 
+#### Summary of key classes and modules making up the pipeline:
+1. `train_vehicle_classifier.py`: This is the main program that initiates the training of the Vehicle Classfier. It calls the train() method defined in `VehicleDetection.VehicleClassifier.py` (not the class method, but the one outside the class).
+2. `run_vehicle_detection2.py`: Main program that initiates and runs the pipeline. This program uses a saved classifier that is trained by the first program above, by calling the `getSavedVehicleClassifier()` method defined in `VehicleDetection.VehicleClassifier.py`. It reads through the video frame by frame, and calls `VehicleClassifier.identifyVehicles()` on each. It also aggregates the heatmap and draws bounding boxes around identified vehicles.
+3. `VehicleDetection.VehicleClassifier.py`: Contains the class VehicleClassifier with methods train(), extractFeatures(), find_cars(), identifyVehicles() etc. This python file also contains some methods defined outside of the class, such as `getSavedVehicleClassifier, train(), testScanImage(), testIndividual()` for getting a saved classifier, initiating training and saving a classifier to disk, and testing and troubleshooting individual frames and images.
+4. `VehicleDetection.lesson_functions.py`: Contains methods to extract hog and other features (taken from Udacity quiz).
+5. `VehicleDetection.heat_map.py`: Contains methods to create heatmap of detected vehicles (taken from Udacity quiz).
+6. `classifier4.pkl`: Pickle file containing the trained classifier and scaler used for this submission.
+
+
 [//]: # (Image References)
 [image1]: ./output_images/car_not_car.png
 [image2]: ./output_images/HOG_example.png

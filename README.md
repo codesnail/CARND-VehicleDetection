@@ -57,7 +57,12 @@ The step to train a classifier is contained in package VehicleDetection, class V
 
 #### 1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
-The sliding window search is implemented in package `VehicleDetection`, class `VehicleClassifier`, method `find_cars()`. This method is borrowed from the Udacity quiz, however there are some changes to it, particularly that I don't initially scale the image from 0 to 1. Rather, first the entire image is scaled down according to the scale of the search window. Then HOG and other features are extracted, then the scaler from training samples is used to scale the features before passing them on to the `predict` method of the classifier.
+The sliding window search is implemented in package `VehicleDetection`, class `VehicleClassifier`, method `find_cars()`. This method is borrowed from the Udacity quiz, however there are some changes to it. The method takes in the window scale to search (the base window is 64x64 pixels), and also a range of y-axis to search between, and it returns a list of window coordinates that are predicted to be cars. This method first extracts the HOG features from the entire frame, then selects a window based on scale and other parameters. The method is called from `VehicleClassifier.identifyVehicles`, which passes various search scales to it. The search scales were selected based on performance on snapshots taken from the test video, as well as clips taken from the project video. I use 3 scales, `[1.0, 1.5, 2.5]`, with the following ranges of y-axis: 
+
+`[[350,500], # for scale = 1
+  [350,512], # for scale = 1.5
+  [400,680]  # for scale = 2.5
+  ]`
 
 ![alt text][image3]
 

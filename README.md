@@ -14,13 +14,17 @@ The goals / steps of this project are the following:
 * Estimate a bounding box for vehicles detected.
 
 [//]: # (Image References)
-[image1]: ./examples/car_not_car.png
-[image2]: ./examples/HOG_example.jpg
-[image3]: ./examples/sliding_windows.jpg
-[image4]: ./examples/sliding_window.jpg
-[image5]: ./examples/bboxes_and_heat.png
-[image6]: ./examples/labels_map.png
-[image7]: ./examples/output_bboxes.png
+[image1]: ./output_images/car_not_car.png
+[image2]: ./output_images/HOG_example.png
+[image3]: ./output_images/predictions_1.png
+[image4]: ./output_images/predictions_2.png
+[image5]: ./output_images/predictions_3.png
+[image6]: ./output_images/predictions_4.png
+[image7]: ./output_images/predictions_5.png
+[image8]: ./output_images/predictions_6.png
+[image5]: ./output_images/bboxes_and_heat.png
+[image6]: ./output_images/labels_map.png
+[image7]: ./output_images/output_bboxes.png
 [video1]: ./project_video.mp4
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
@@ -57,20 +61,23 @@ The step to train a classifier is contained in package VehicleDetection, class V
 
 #### 1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
-The sliding window search is implemented in package `VehicleDetection`, class `VehicleClassifier`, method `find_cars()`. This method is borrowed from the Udacity quiz, however there are some changes to it. The method takes in the window scale to search (the base window is 64x64 pixels), and also a range of y-axis to search between, and it returns a list of window coordinates that are predicted to be cars. This method first extracts the HOG features from the entire frame, then selects a window based on scale and other parameters. The method is called from `VehicleClassifier.identifyVehicles`, which passes various search scales to it. The search scales were selected based on performance on snapshots taken from the test video, as well as clips taken from the project video. I use 3 scales, `[1.0, 1.5, 2.5]`, with the following ranges of y-axis: 
+The sliding window search is implemented in package `VehicleDetection`, class `VehicleClassifier`, method `find_cars()`. This method is borrowed from the Udacity quiz, however there are some changes to it. The method takes in the window scale to search (the base window is 64x64 pixels), and also a range of y-axis to search between, and it returns a list of window coordinates that are predicted to be cars. This method first extracts the HOG features from the entire frame, then selects a window based on scale and other parameters. The method is called from `VehicleClassifier.identifyVehicles`, which passes various search scales to it. The search scales were selected based on performance on snapshots taken from the test video, as well as clips taken from the project video. Initially I used 2 scales of 1.5 and 2.0. This was doing well for the cars that are near-by, but I wanted to cover a little more distance. So I ended up using 3 scales, `[1.0, 1.5, 2.5]`, with the following ranges of y-axis: 
 
 `[[350,500], # for scale = 1
   [350,512], # for scale = 1.5
   [400,680]  # for scale = 2.5
   ]`
 
-![alt text][image3]
-
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
 Here are some example images:
 
+![alt text][image3]
 ![alt text][image4]
+![alt text][image5]
+![alt text][image6]
+![alt text][image7]
+![alt text][image8]
 
 I first used a plain Linear SVM classifier, but it was producing a lot of false positives. I then did negative sample mining to extract false positives from a few frames of the test video and fed them as non-car training examples. I had to repeat this train/test cycle a number of times and feed false positives from one cycle to the next. This led me to consider AdaBoost. It uses an ensemble of weak classifiers, where the misclassified samples from one classifier are assigned a higher weight to train the next classifier. I used Linear SVM as the base classifier for AdaBoost, and with good results on the test video, I settled on this choice. 
 

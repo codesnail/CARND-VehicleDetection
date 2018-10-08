@@ -482,18 +482,7 @@ class VehicleClassifier:
 
 
     def identifyVehicles(self, frame, search_scales=[1.0, 1.5, 2.5, 3.0], heatmap=None, heat_threshold=2, sframe_id="", visualize=0):
-        #draw_image = np.copy(image)
-        
-        # Uncomment the following line if you extracted training
-        # data from .png images (scaled 0 to 1 by mpimg) and the
-        # image you are searching is a .jpg (scaled 0 to 255)
-        #image = image.astype(np.float32)/255
-        
-        #xy_window = [64,64]
-        #windows = slide_window(frame, x_start_stop=[None, None], y_start_stop=self.y_start_stop, 
-                            #xy_window=xy_window, xy_overlap=(0.5, 0.5))
-        
-        #hot_windows = self.scan_windows(frame, windows)
+
         print(search_scales)
         on_windows = []
         #find_cars_nb = numba.jit(self.find_cars)
@@ -525,6 +514,7 @@ class VehicleClassifier:
         on_windows = list(itertools.chain(*on_windows))
         
         '''
+        # Trying multiprocessing for speedup
         
         w = 3
         pool = mp.Pool(processes=w)
@@ -542,12 +532,6 @@ class VehicleClassifier:
         result = None
         '''
         
-        #window_img = draw_boxes(draw_image, hot_windows, color=(0, 0, 255), thick=6)
-        #plt.figure(figsize=(10,10))
-        #plt.imshow(window_img)
-        #plt.imshow(hot_windows_img)
-        
-        #return hot_windows
         # Add heat to each box in box list
         if(heatmap is None):
             heatmap = np.zeros_like(frame[:,:,0]).astype(np.float)
@@ -557,27 +541,9 @@ class VehicleClassifier:
         
         # Apply threshold to help remove false positives
         heatmap = apply_threshold(heatmap, heat_threshold) #1
-        
-        '''
-        # Visualize the heatmap when displaying    
-        heatmap = np.clip(heatmap, 0, 255)
-        
-        # Find final boxes from heatmap using label function
-        labels = label(heatmap)
-        draw_img, hot_windows = draw_labeled_bboxes(np.copy(frame), labels)
-        
-        fig = plt.figure(figsize=(15,15))
-        plt.subplot(151)
-        plt.imshow(np.flip(draw_img, axis=2))
-        plt.title('Car Positions')
-        plt.subplot(152)
-        plt.imshow(heatmap, cmap='hot')
-        plt.title('Heat Map')
-        '''
-        
+               
         if(visualize==1):
             on_windows_img = np.copy(frame)
-            on_windows_img_list = []
             for win in on_windows:
                 cv2.rectangle(on_windows_img, win[0], win[1], (0,0,255), 6)
             
@@ -597,10 +563,6 @@ class VehicleClassifier:
             fig.tight_layout()
             plt.show()
         
-        
-        '''
-        return draw_img, hot_windows, heatmap
-        '''
         return heatmap
 
 import pickle

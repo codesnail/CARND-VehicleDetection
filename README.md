@@ -57,7 +57,7 @@ The step to train a classifier is contained in package VehicleDetection, class V
 
 #### 1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
-The sliding window search is implemented in package VehicleDetection, class VehicleClassifier, method find_cars(). This method is borrowed from the Udacity quiz, however there are some changes to it, particularly that the image is not initially scaled from 0 to 1. Rather, first the HOG and other features are extracted and then the scaler from training samples is used to scale the features before passing them on to the `predict` method of the classifier.
+The sliding window search is implemented in package `VehicleDetection`, class `VehicleClassifier`, method `find_cars()`. This method is borrowed from the Udacity quiz, however there are some changes to it, particularly that I don't initially scale the image from 0 to 1. Rather, first the entire image is scaled down according to the scale of the search window. Then HOG and other features are extracted, then the scaler from training samples is used to scale the features before passing them on to the `predict` method of the classifier.
 
 ![alt text][image3]
 

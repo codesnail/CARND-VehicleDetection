@@ -97,7 +97,7 @@ The filteration code is implemented in the main program that runs the pipeline: 
 
 Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video. In my implementation, I integrate and threshold the heatmap after each frame. The advantage is that the vehicle identification starts early. In the images below, each individual frame's predictions and heatmap is shown, followed by the integrated heatmap of the last 5 frames upto that point after thresholding:
 
-####Frame1:
+<b>Frame1:</b>
 
 ![alt text][image9]
 ![alt text][image10]

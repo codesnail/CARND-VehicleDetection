@@ -96,10 +96,6 @@ class VehicleClassifier:
             X, y, test_size=self.test_size, random_state=rand_state)
             
         # Fit a per-column scaler
-        self.X_scaler = StandardScaler().fit(X_train)
-        # Apply the scaler to X
-        X_train = self.X_scaler.transform(X_train)
-        X_test = self.X_scaler.transform(X_test)
         
         print('Using:',self.orient,'orientations', self.pix_per_cell,
             'pixels per cell and', self.cell_per_block,'cells per block')
@@ -107,6 +103,10 @@ class VehicleClassifier:
         return X_train, y_train, X_test, y_test
 
     def extractFeaturesNoSplit(self, images, cars=True):
+        self.X_scaler = StandardScaler().fit(X_train)
+        # Apply the scaler to X
+        X_train = self.X_scaler.transform(X_train)
+        X_test = self.X_scaler.transform(X_test)
         objects = []
         for image in images:
             objects.append(image)
@@ -481,7 +481,7 @@ class VehicleClassifier:
         return on_windows
 
 
-    def identifyVehicles(self, frame, search_scales=[1.0, 1.5, 2.5], heatmap=None, heat_threshold=2, sframe_id="", visualize=0):
+    def identifyVehicles(self, frame, search_scales=[1.1, 2.0], heatmap=None, heat_threshold=2, sframe_id="", visualize=0):
         #draw_image = np.copy(image)
         
         # Uncomment the following line if you extracted training
@@ -498,7 +498,7 @@ class VehicleClassifier:
         on_windows = []
         #find_cars_nb = numba.jit(self.find_cars)
         y_range = [
-                    [350,500], # for scale = 1
+                    #[350,500], # for scale = 1
                     [350,512], # for scale = 1.5
                     [400,680], # for scale = 2.5
                     #[400,680] # for scale = 3.0
@@ -581,13 +581,18 @@ class VehicleClassifier:
             for win in on_windows:
                 cv2.rectangle(on_windows_img, win[0], win[1], (0,0,255), 6)
             
-            on_windows_img_list.append(on_windows_img)
+            #on_windows_img_list.append(on_windows_img)
             
-            fig = plt.figure(figsize=(8,8))
-            for j in range(len(on_windows_img_list)):
-                plt.subplot(111+j)
-                plt.imshow(np.flip(on_windows_img_list[j], axis=2))
-                plt.title('On Windows')
+            fig = plt.figure(figsize=(12,12))
+            plt.subplot(131)
+            plt.imshow(np.flip(frame, axis=2))
+            plt.title("Original Frame")
+            plt.subplot(132)
+            plt.imshow(np.flip(on_windows_img, axis=2))
+            plt.title('Car Predictions')
+            plt.subplot(133)
+            plt.imshow(heatmap, cmap="hot")
+            plt.title('Heat Map')
                 
             fig.tight_layout()
             plt.show()
@@ -600,7 +605,7 @@ class VehicleClassifier:
 
 import pickle
 
-def train(extra_noncars):
+def train(extra_noncars=None):
     vClsfr = VehicleClassifier()
     car_files = [
                  'C:\\Users\\ahmed\\Downloads\\vehicles\\GTI_Far\\*.png',
@@ -635,7 +640,8 @@ def train(extra_noncars):
                     'C:\\Users\\ahmed\\Downloads\\non-vehicles\\Extras\\extra212.png'
                     ]
     
-    extra_noncars2 = list(np.concatenate((extra_noncars2, extra_noncars))) #glob.glob("C:\\Yaser\\Udacity\\CarND-Term1\\vehicle-detection\\test_images\\project_test25_2_*.png"))))
+    if(extra_noncars is not None):
+        extra_noncars2 = list(np.concatenate((extra_noncars2, extra_noncars))) #glob.glob("C:\\Yaser\\Udacity\\CarND-Term1\\vehicle-detection\\test_images\\project_test25_2_*.png"))))
     
     
     vClsfr.train(car_files, noncar_files, None, extra_noncars2)

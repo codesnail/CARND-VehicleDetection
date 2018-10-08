@@ -22,10 +22,17 @@ The goals / steps of this project are the following:
 [image6]: ./output_images/predictions_4.png
 [image7]: ./output_images/predictions_5.png
 [image8]: ./output_images/predictions_6.png
-[image5]: ./output_images/bboxes_and_heat.png
-[image6]: ./output_images/labels_map.png
-[image7]: ./output_images/output_bboxes.png
-[video1]: ./project_video.mp4
+[image9]: ./output_images/heat_map1.png
+[image10]: ./output_images/int_heat_map1.png
+[image11]: ./output_images/heat_map2.png
+[image12]: ./output_images/int_heat_map2.png
+[image13]: ./output_images/heat_map3.png
+[image14]: ./output_images/int_heat_map3.png
+[image15]: ./output_images/heat_map4.png
+[image16]: ./output_images/int_heat_map4.png
+[image17]: ./output_images/heat_map5.png
+[image18]: ./output_images/int_heat_map5.png
+[video1]: ./project_video_out.mp4
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
 ### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
@@ -88,18 +95,30 @@ Here's a [link to my video result](./project_video_out.mp4)
 
 The filteration code is implemented in the main program that runs the pipeline: `run_vehicle_detection2.py`. This program loops through the video frames and calls `VehicleClassifier.identifyVehicles()` on each frame. It returns a heatpmap of detected pixels for each frame. These heatmaps are stored in a list for 5 subsequent frames. I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the aggregated heatmaps. For aggregation, I first tried taking the mean of the heat maps and thresholding at 3 detections per frame. This worked pretty well to filter out the false positives, but it doesn't create very good bounding boxes and is late in identifying vehicles that are just appearing in the frame. So I used the sum of 5 subsequent heatmaps and thresholding them at 12 total detections (considering I'm searching on 3 scales). I then assumed each blob corresponded to a vehicle. I constructed bounding boxes to cover the area of each blob detected.
 
-Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
+Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video. In my implementation, I integrate and threshold the heatmap after each frame. The advantage is that the vehicle identification starts early. In the images below, each individual frame's predictions and heatmap is shown, followed by the integrated heatmap of the last 5 frames upto that point after thresholding:
 
-### Here are six frames and their corresponding heatmaps:
+Frame1:
 
-![alt text][image5]
+![alt text][image9]
+![alt text][image10]
 
-### Here is the output of `scipy.ndimage.measurements.label()` on the integrated heatmap from all six frames:
-![alt text][image6]
+Frame2: 
+![alt text][image11]
+![alt text][image12]
 
-### Here the resulting bounding boxes are drawn onto the last frame in the series:
-![alt text][image7]
+Frame3:
+![alt text][image13]
+![alt text][image14]
 
+Frame4:
+![alt text][image15]
+![alt text][image16]
+
+Here, we can see the false positive prediction is removed in the integrated heatmap.
+
+Frame 5:
+![alt text][image17]
+![alt text][image18]
 
 
 ---

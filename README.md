@@ -47,7 +47,7 @@ I explored different color spaces and different `skimage.hog()` parameters (`ori
 
 #### 2. Explain how you settled on your final choice of HOG parameters.
 
-I tried various combinations of HOG parameters to train my classifier, and settled on the one that gave better score on the test set. Besides the test set from train_test_split, I also tested the classifier on single frames extracted from the test video.
+I tried various combinations of HOG parameters to train my classifier, and settled on the one that gave better score on the test set. Besides the test set from train_test_split, I also tested the classifier on single frames extracted from the test video. For orientations, higher than 9 was giving worse results so I settled at 9. That number was also suggested as a inflection point in the HOG paper.
 
 #### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 

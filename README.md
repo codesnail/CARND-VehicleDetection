@@ -97,30 +97,30 @@ The filteration code is implemented in the main program that runs the pipeline: 
 
 Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video. In my implementation, I integrate and threshold the heatmap after each frame. The advantage is that the vehicle identification starts early. In the images below, each individual frame's predictions and heatmap is shown, followed by the integrated heatmap of the last 5 frames upto that point after thresholding:
 
-<b>Frame1:</b>
+#### Frame1:
 
 ![alt text][image9]
 ![alt text][image10]
 
 The first integrated heatmap is empty as the required threshold is not yet met.
 
-####Frame2: 
+#### Frame2:
 ![alt text][image11]
 ![alt text][image12]
 
 The second integrated heatmap consisting of the first 2 frames meets the threshold, and the car positions are displayed.
 
-####Frame3:
+#### Frame3:
 ![alt text][image13]
 ![alt text][image14]
 
-####Frame4:
+#### Frame4:
 ![alt text][image15]
 ![alt text][image16]
 
 Here, we can see the false positive prediction is removed in the integrated heatmap.
 
-####Frame 5:
+#### Frame 5:
 ![alt text][image17]
 ![alt text][image18]
 

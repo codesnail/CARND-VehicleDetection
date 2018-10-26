@@ -10,15 +10,6 @@ The project implements the following pipeline:
 * Run the pipeline on a video stream and create a heat map of recurring detections frame by frame to reject outliers and follow detected vehicles.
 * Estimate a bounding box for vehicles detected.
 
-#### Summary of key classes and modules making up the pipeline:
-1. `train_vehicle_classifier.py`: This is the main program that initiates the training of the Vehicle Classfier. It calls the train() method defined in `VehicleDetection.VehicleClassifier.py` (not the class method, but the one outside the class).
-2. `run_vehicle_detection2.py`: Main program that initiates and runs the pipeline. This program uses a saved classifier that is trained by the first program above, by calling the `getSavedVehicleClassifier()` method defined in `VehicleDetection.VehicleClassifier.py`. It reads through the video frame by frame, and calls `VehicleClassifier.identifyVehicles()` on each. It also aggregates the heatmap and draws bounding boxes around identified vehicles.
-3. `VehicleDetection.VehicleClassifier.py`: Contains the class VehicleClassifier with methods train(), extractFeatures(), find_cars(), identifyVehicles() etc. This python file also contains some methods defined outside of the class, such as `getSavedVehicleClassifier, train(), testScanImage(), testIndividual()` for getting a saved classifier, initiating training and saving a classifier to disk, and testing and troubleshooting individual frames and images.
-4. `VehicleDetection.lesson_functions.py`: Contains methods to extract hog and other features (taken from Udacity quiz).
-5. `VehicleDetection.heat_map.py`: Contains methods to create heatmap of detected vehicles (taken from Udacity quiz).
-6. `classifier4.pkl`: Pickle file containing the trained classifier and scaler used for this submission.
-
-
 [//]: # (Image References)
 [image1]: ./output_images/car_not_car.png
 [image2]: ./output_images/HOG_example.png
@@ -38,7 +29,29 @@ The project implements the following pipeline:
 [image16]: ./output_images/int_heat_map4.png
 [image17]: ./output_images/heat_map5.png
 [image18]: ./output_images/int_heat_map5.png
+[image19]: ./VehicleDetection_Classes.jpg
+[image20]: ./VehicleDetection_Sequence.jpg
 [video1]: ./project_video_out.mp4
+
+### Project Design
+
+#### Class Diagram
+The following class diagram shows a structural view of the classes making up the pipeline:
+
+![alt text][image19]
+
+#### Sequence Diagram
+The following diagram shows the sequence of how the pipeline is executed:
+
+![alt text][image20]
+
+1. `train_vehicle_classifier.py`: This is the main program that initiates the training of the Vehicle Classfier. It calls the train() method defined in `VehicleDetection.VehicleClassifier.py` (not the class method, but the one outside the class).
+2. `run_vehicle_detection2.py`: Main program that initiates and runs the pipeline. This program uses a saved classifier that is trained by the first program above, by calling the `getSavedVehicleClassifier()` method defined in `VehicleDetection.VehicleClassifier.py`. It reads through the video frame by frame, and calls `VehicleClassifier.identifyVehicles()` on each. It also aggregates the heatmap and draws bounding boxes around identified vehicles.
+3. `VehicleDetection.VehicleClassifier.py`: Contains the class VehicleClassifier with methods train(), extractFeatures(), find_cars(), identifyVehicles() etc. This python file also contains some methods defined outside of the class, such as `getSavedVehicleClassifier, train(), testScanImage(), testIndividual()` for getting a saved classifier, initiating training and saving a classifier to disk, and testing and troubleshooting individual frames and images.
+4. `VehicleDetection.lesson_functions.py`: Contains methods to extract hog and other features (taken from Udacity quiz).
+5. `VehicleDetection.heat_map.py`: Contains methods to create heatmap of detected vehicles (taken from Udacity quiz).
+6. `classifier4.pkl`: Pickle file containing the trained classifier and scaler used for this submission.
+
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
 

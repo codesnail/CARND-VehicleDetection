@@ -52,8 +52,6 @@ The following diagram shows the sequence of how the pipeline is executed:
 1. `classifier4.pkl`: Pickle file containing the trained classifier and scaler used for this submission.
 
 
-## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
-
 ### Histogram of Oriented Gradients (HOG)
 
 #### 1. Explain how (and identify where in your code) you extracted HOG features from the training images.

@@ -68,7 +68,7 @@ For the features, I used HOG, color histogram and spatial features. The method e
 
 I settled on the parameters that gave better score on the test set. Besides the test set from train_test_split, I also tested the classifier on single frames extracted from the test video. For orientations, higher than 9 was giving worse results so I settled at 9. That number was also suggested as a inflection point in the original HOG paper.
 
-#### 3. Training and Classifier Choice
+### Training and Classifier Choice
 
 The step to train a classifier is contained in package VehicleDetection, class VehicleClassifier, method train(). After loading the car and non-car images, I split the data into train/test sets using train_test_split() method of sklearn.model_selection. I then fitted a Standard_Scaler on the training data and kept it around for testing and future processing. The scaled training data was then fed to AdaBoost with Linear SVM as the base classifiers.
 
@@ -76,9 +76,9 @@ The step to train a classifier is contained in package VehicleDetection, class V
 
 The sliding window search is implemented in package `VehicleDetection`, class `VehicleClassifier`, method `find_cars()`. The method takes in the window scale to search (the base window is 64x64 pixels), and also a range of y-axis to search between, and it returns a list of window coordinates that are predicted to be cars. This method first extracts the HOG features from the entire frame, then selects a window based on scale and other parameters. The method is called from `VehicleClassifier.identifyVehicles`, which passes various search scales to it. The search scales were selected based on performance on snapshots taken from the test video, as well as clips taken from the project video. Initially I used 2 scales of 1.5 and 2.0. This was doing well for the cars that are near-by, but I wanted to cover a little more distance. So I ended up using 3 scales, `[1.0, 1.5, 2.5]`, with the following ranges of y-axis respectively: `[350,500], [350,512], [400,680]`
 
-#### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
+### Example Results and Optimization
 
-Here are some example images:
+Here are some video frames with example results:
 
 ![alt text][image3]
 ![alt text][image4]
@@ -87,7 +87,7 @@ Here are some example images:
 ![alt text][image7]
 ![alt text][image8]
 
-I first used a plain Linear SVM classifier, but it was producing a lot of false positives. I then did negative sample mining to extract false positives from a few frames of the test video and fed them as non-car training examples. I had to repeat this train/test cycle a number of times and feed false positives from one cycle to the next. This led me to consider AdaBoost. It uses an ensemble of weak classifiers, where the misclassified samples from one classifier are assigned a higher weight to train the next classifier. I used Linear SVM as the base classifier for AdaBoost, and with good results on the test video, I settled on this choice. 
+I first used a plain Linear SVM classifier, but it was producing a lot of false positives. I had to do significant negative sample mining to extract false positives from a few frames of the test video and fed them as non-car training examples. I had to repeat this train/test cycle a number of times and feed false positives from one cycle to the next. This led me to consider AdaBoost, since it uses an ensemble of weak classifiers, where the misclassified samples from one classifier are assigned a higher weight to train the next classifier. I used Linear SVM as the base classifier for AdaBoost, and with good results on the test video. 
 
 ---
 
@@ -99,7 +99,7 @@ Here's a [link to my video result](./project_video_out.mp4)
 
 #### 2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
-The filteration code is implemented in the main program that runs the pipeline: `run_vehicle_detection2.py`. This program loops through the video frames and calls `VehicleClassifier.identifyVehicles()` on each frame. It returns a heatpmap of detected pixels for each frame. These heatmaps are stored in a list for 5 subsequent frames. I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the aggregated heatmaps. For aggregation, I first tried taking the mean of the heat maps and thresholding at 3 detections per frame. This worked pretty well to filter out the false positives, but it doesn't create very good bounding boxes and is late in identifying vehicles that are just appearing in the frame. So I used the sum of 5 subsequent heatmaps and thresholding them at 12 total detections (considering I'm searching on 3 scales). I then assumed each blob corresponded to a vehicle. I constructed bounding boxes to cover the area of each blob detected.
+The filteration code is implemented in the main program that runs the pipeline: `run_vehicle_detection2.py`. This program loops through the video frames and calls `VehicleClassifier.identifyVehicles()` on each frame. It returns a heatpmap of detected pixels for each frame. These heatmaps are stored in a list of 5 consecutive frames. I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the aggregated heatmaps. For aggregation, I first tried taking the mean of the heat maps and thresholding at 3 detections per frame. This worked pretty well to filter out the false positives, but it doesn't create very good bounding boxes and is late in identifying vehicles that are just appearing in the frame. So I used the sum of 5 subsequent heatmaps and thresholding them at 12 total detections (factoring in that I'm searching on 3 scales). I then assumed each blob corresponded to a vehicle. I constructed bounding boxes to cover the area of each blob detected.
 
 Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video. In my implementation, I integrate and threshold the heatmap after each frame. The advantage is that the vehicle identification starts early. In the images below, each individual frame's predictions and heatmap is shown, followed by the integrated heatmap of the last 5 frames upto that point after thresholding:
 
@@ -137,9 +137,9 @@ Here, we can see the false positive prediction is removed in the integrated heat
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-The first problem I faced was the detection of lots of false positives. I already discussed the approach I took above where I discussed how I optimized the classifier and used AdaBoost. To me the major challenge of this approach is to identify non-cars. My pipeline incorrectly classifies some sign-boards and probably will fail on other objects not explicitly trained on that look similar to a car. I could remove these by identifying those objects and training more on them. But for me this is the major pitfall of this approach, i.e., it relies on negative mining, and makes it look a bit unreliable. Ideally I would like to explore more features to identify the positive examples more correctly. I could use template matching, but the template has to be generic enough or I will have to use multiple templates. 
+The first problem I faced was the detection of lots of false positives. I already discussed the approach I took above where I discussed how I optimized the classifier using negative mining and using AdaBoost. To me the major challenge of this approach is to identify non-cars. The current pipeline still incorrectly classifies some sign-boards and probably will fail on other objects not explicitly trained on that look similar to a car. I can remove these by targeted negative mining and training on them. For me this is the major pitfall of this approach, i.e., it relies on negative mining, and so makes it a bit unreliable. Ideally I would like to explore more features to identify the positive examples more correctly. I could use template matching, but the template has to be generic enough or I will have to use multiple templates. 
 
-Another approach would be to implement a bayesian predict/sense cycle, with a Kalman or particle filter, so that once a vehicle is detected, we can follow it more accurately by updating its sensed position with a motion prediction model.
+Another approach would be to implement a bayesian predict/sense cycle, with a Kalman or particle filter. But this would work only after a vehicle is detected initially, then we can follow it more accurately by updating its sensed position with a motion prediction model.
 
 I would like to try deep learning to see if that works better, however to me it's lack of an explanable model would be a key concern from safety perspective (but similar concern is present in the current approach).
 

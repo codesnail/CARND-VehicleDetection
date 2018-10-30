@@ -52,29 +52,27 @@ The following diagram shows the sequence of how the pipeline is executed:
 1. `classifier4.pkl`: Pickle file containing the trained classifier and scaler used for this submission.
 
 
-### Histogram of Oriented Gradients (HOG)
+### Data Exploration
 
-#### 1. Explain how (and identify where in your code) you extracted HOG features from the training images.
-
-This step is contained in VehicleDetection.VehicleClassifier, in the method train(). First I specify a list of directories to read training images from. This method then passes on the list of directories to the train() method of the VehicleClassifier class. The first two steps in this method getRawData() and extractFeatures() load the training images, which consist of `vehicle` and `non-vehicle` images. Here is an example of each one of these:
+Here is an example of `vehicle` and `non-vehicle` images:
 
 ![alt text][image1]
 
-I explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).   Here is an example using the `YCrCb` color space and HOG parameters of `orientations=9`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
+The image dimensions are 32x32x3. All images are taken from behind the vehicles, some directly behind and some from an angle. All `vehicles` are cars of various models and colors. No trucks or buses are included in this project.
+
+### Feature Extraction
+
+For the features, I used HOG, color histogram and spatial features. The method extractFeatures() in VehicleClassifier generates these features from images. I explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`). Here is an example using the `YCrCb` color space and HOG parameters of `orientations=9`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
 
 ![alt text][image2]
 
-#### 2. Explain how you settled on your final choice of HOG parameters.
+I settled on the parameters that gave better score on the test set. Besides the test set from train_test_split, I also tested the classifier on single frames extracted from the test video. For orientations, higher than 9 was giving worse results so I settled at 9. That number was also suggested as a inflection point in the original HOG paper.
 
-I tried various combinations of HOG parameters to train my classifier, and settled on the one that gave better score on the test set. Besides the test set from train_test_split, I also tested the classifier on single frames extracted from the test video. For orientations, higher than 9 was giving worse results so I settled at 9. That number was also suggested as a inflection point in the HOG paper.
+#### 3. Training and Classifier Choice
 
-#### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
-
-The step to train a classifier is contained in package VehicleDetection, class VehicleClassifier, method train(). For the features, I used HOG, color histogram and spatial features. In the train() method, after loading the car and non-car images, I split the data into train/test sets using train_test_split() method of sklearn.model_selection. I then fitted a Standard_Scaler on the training data and kept it around for testing and future processing. The scaled training data was then fed to AdaBoost with Linear SVM as the base classifiers.
+The step to train a classifier is contained in package VehicleDetection, class VehicleClassifier, method train(). After loading the car and non-car images, I split the data into train/test sets using train_test_split() method of sklearn.model_selection. I then fitted a Standard_Scaler on the training data and kept it around for testing and future processing. The scaled training data was then fed to AdaBoost with Linear SVM as the base classifiers.
 
 ### Sliding Window Search
-
-#### 1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
 The sliding window search is implemented in package `VehicleDetection`, class `VehicleClassifier`, method `find_cars()`. The method takes in the window scale to search (the base window is 64x64 pixels), and also a range of y-axis to search between, and it returns a list of window coordinates that are predicted to be cars. This method first extracts the HOG features from the entire frame, then selects a window based on scale and other parameters. The method is called from `VehicleClassifier.identifyVehicles`, which passes various search scales to it. The search scales were selected based on performance on snapshots taken from the test video, as well as clips taken from the project video. Initially I used 2 scales of 1.5 and 2.0. This was doing well for the cars that are near-by, but I wanted to cover a little more distance. So I ended up using 3 scales, `[1.0, 1.5, 2.5]`, with the following ranges of y-axis respectively: `[350,500], [350,512], [400,680]`
 

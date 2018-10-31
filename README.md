@@ -4,8 +4,8 @@ The goal of this project is to identify vehicles on the road in a video feed. Th
 
 The project implements the following pipeline:
 
-* Perform a Histogram of Oriented Gradients (HOG) feature extraction on a labeled training set of images and train a classifier.
-* Optionally use color and spatial features. 
+* Perform a Histogram of Oriented Gradients (HOG) feature extraction on a labeled training set of images and train a AdaBoost classifier.
+* Use color and spatial features. 
 * Implement a sliding-window technique and use the trained classifier to search for vehicles in images.
 * Run the pipeline on a video stream and create a heat map of recurring detections frame by frame to reject outliers and follow detected vehicles.
 * Estimate a bounding box for vehicles detected.

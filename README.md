@@ -12,6 +12,8 @@ The project implements the following pipeline:
 
 [//]: # (Image References)
 [image1]: ./output_images/car_not_car.png
+[image1.1]: ./output_images/cars.png
+[image1.2]: ./output_images/not_cars.png
 [image2]: ./output_images/HOG_example.png
 [image3]: ./output_images/predictions_1.png
 [image4]: ./output_images/predictions_2.png
@@ -54,7 +56,7 @@ The following diagram shows the sequence of how the pipeline is executed:
 
 ### Data Exploration
 
-Here is an example of `vehicle` and `non-vehicle` images:
+The training data for this project consists of cars and non-car images seen on roads. Here is an example of `vehicle` and `non-vehicle` images:
 
 ![alt text][image1]
 
